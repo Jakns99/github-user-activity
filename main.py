@@ -14,6 +14,13 @@ github_api_url = "https://api.github.com/users" # GitHub API URL reference
 #----------------------------------------------------------------------------------------------------------------------#
 def get_recent_activity(username):
     """Fetches the recent activity of the provided username"""
+    url = f"https://api.github.com/users/{username}/events"
+    response = requests.get(url) # Get request for the API url
+    if response.status_code == 200:
+        github_data = response.json()
+    else:
+        print(f"\033[1;31mPlease enter a valid username.\0330m")
+
 
 
 
