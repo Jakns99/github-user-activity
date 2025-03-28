@@ -10,21 +10,23 @@ from rich import print as rich_print
 # TODO 6. Cache fetched data
 github_api_url = "https://api.github.com/users" # GitHub API URL reference
 
-# Fetch recent event activity from username
+# Fetch recent event activity from username using api link
 #----------------------------------------------------------------------------------------------------------------------#
 def get_recent_activity(username):
     """Fetches the recent activity of the provided username"""
     url = f"https://api.github.com/users/{username}/events"
-    response = requests.get(url) # Get request for the API url
+    response = requests.get(url)
     if response.status_code == 200:
-        github_data = response.json()
-        events = github_data
+        events = response.json()
         for event in events:
-            if event['type'] == "CreateEvent": # Lists all CreateEvent actions taken recently by user
-                rich_print(f"{username} created event: {event['payload']['ref_type']} {event['payload']['ref']}")
+            if event['type'] == "CreateEvent": # Lists recent CreateEvents by the user
+                rich_print(f"{username} created {event['payload']['ref_type']} {event['payload']['ref']}")
+            elif event['type'] == "PushEvent": # Lists recent code pushes by user
+                rich_print(f"{username} pushed new code to {event['repo']['name']}")
+            elif event['type'] == "PullRequestEvent": # List recent pull requests by user
+                rich_print(f"{username} created pull request {event['payload']['pull_request']['number']}")
+            else:
+                rich_print(f"{event['type']}")
     else:
-        print(f"\033[1;31mPlease enter a valid username.\0330m")
-
-
-
+        print(f"Failed to retrieve user data: {response.status_code}")
 
