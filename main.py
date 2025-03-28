@@ -25,8 +25,19 @@ def get_recent_activity(username):
                 rich_print(f"{username} pushed new code to {event['repo']['name']}")
             elif event['type'] == "PullRequestEvent": # List recent pull requests by user
                 rich_print(f"{username} created pull request {event['payload']['pull_request']['number']}")
+            elif event['type'] == "ForkEvent": # Lists recent forks by user
+                rich_print(f"{username} forked {event['repo']['name']}")
+            elif event['type'] == "WatchEvent": # Lists recent stars by user
+                rich_print(f"{username} starred {event['repo']['name']}")
+            elif event['type'] == "IssueCommentEvent": # Lists recent comments by user
+                rich_print(f"{username} commented on issue {event['payload']['issue']['number']} in {event['repo']['name']}")
             else:
                 rich_print(f"{event['type']}")
     else:
         print(f"Failed to retrieve user data: {response.status_code}")
 
+if __name__ == "__main__":
+    if len(sys.argv) > 1: # If user provides a username
+        get_recent_activity(sys.argv[1]) # Fetches the recent activity of the provided username
+    else:
+        print("Error, username not found, please provide a valid GitHub username.")
