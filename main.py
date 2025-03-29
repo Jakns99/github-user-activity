@@ -1,16 +1,30 @@
 import requests
 import sys
 from rich import print as rich_print
+from dataclasses import dataclass
+from requests_cache import CachedSession
 
 # TODO 1. Have user provide GitHub username as an argument when running the CLI
-# TODO 2. Fetch recent activity of GH user using API
-# TODO 3. Display the fetched activity in the terminal, using JSON
+# TODO 2. Fetch recent activity of GH user using API (DONE)
+# TODO 3. Display the fetched activity in the terminal, using JSON (DONE)
 # TODO 4. Handle errors gracefully
 # TODO 5. Filter by Event type
 # TODO 6. Cache fetched data
 github_api_url = "https://api.github.com/users" # GitHub API URL reference
 
-# Fetch recent event activity from username using api link
+session = CachedSession(
+    cache_name='github_cache',
+    backend='sqlite',
+    expire_after=3600,  # Cache for 1 hour
+)
+
+@dataclass
+class User:
+    """Dataclass to represent a GitHub user"""
+    username: str
+    events_url: str
+
+ # Fetch recent event activity from username using api link
 #----------------------------------------------------------------------------------------------------------------------#
 def get_recent_activity(username):
     """Fetches the recent activity of the provided username"""
